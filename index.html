@@ -12,19 +12,19 @@
         
       <meta name="author" content="CUAC FM" />
       <meta name="copyright" content="CUAC FM" />
-      <meta name="application-name" content="Escoita CUAC FM no teu smartphone Android ou iOS" />
+      <meta name="application-name" content="Control remoto da emisora" />
         
       <!-- for Facebook -->          
       <meta property="og:title" content="Escoita CUAC FM en internet" />
       <meta property="og:type" content="article" />
       <meta property="og:image" content="https://cuacfm.org/apps/assets/css/images/cuac-resiste.jpg" />
       <meta property="og:url" content="https://cuacfm.org/" />
-      <meta property="og:description" content="Escoita CUAC FM no teu smartphone Android" />
+      <meta property="og:description" content="Control remoto da emisora" />
         
       <!-- for Twitter -->          
       <meta name="twitter:card" content="summary" />
-      <meta name="twitter:title" content="Escoita CUAC FM en internet" />
-      <meta name="twitter:description" content="Escoita CUAC FM no teu smartphone Android" />
+      <meta name="twitter:title" content="Control remoto da emisora" />
+      <meta name="twitter:description" content="Control remoto da emisora" />
       <meta name="twitter:image" content="https://cuacfm.org/apps/assets/css/images/cuac-resiste.jpg" />
    		
       <!-- Android Phone -->
@@ -36,7 +36,7 @@
       <meta name="apple-mobile-web-app-capable" content="yes">
     
     
-		<title>CUAC FM en Google Play</title>
+		<title>CUAC FM: Control remoto</title>
 		<meta charset="utf-8" />
         <link rel="apple-touch-icon" sizes="57x57" href="assets/css/images/favicon/apple-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="assets/css/images/favicon/apple-icon-60x60.png">
@@ -69,16 +69,13 @@
 			<header id="header">
 				<div class="content">
 					<h1><a href="#">CUAC FM</a></h1>
-					<p>A mellor forma de escoitar a emisora comunitaria da Coruña<br />
-					nas apps móbiles Android ou iOS</p>
+					<p id="msg-to-show">Estamos cargando los datos actuales. Espera un momento...</p>
                     <ul class="actions">
-						<li><a href="https://play.google.com/store/apps/details?id=com.app.cuacfm.radio.coruna&hl=es" class="button special icon fa-download">Android</a></li>
-                        <li><a href="https://itunes.apple.com/es/app/cuac-fm/id536600585?mt=8" class="button special icon fa-download">iOS</a></li>
+                        <li><a id="action-to-launch" href="#" class="button special icon fa-play">...</a></li>
 					</ul>
-                    <p><a href="#one" class="button icon fa-chevron-down scrolly">Saber máis</a></p>
                     
 				</div>
-				<div class="image phone"><div class="inner"><img src="images/screen.jpg" alt="" /></div></div>
+				<div class="image phone"><div class="inner"><img id="image-to-show" src="images/loading.jpg" alt="" /></div></div>
 			</header>
 
 		<!-- Footer -->
@@ -98,6 +95,41 @@
 			<script src="assets/js/util.js"></script>
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
 			<script src="assets/js/main.js"></script>
+				
+			 <script type="text/javascript">
+			 	function loadDataFromJSON(){
+				   	 $.getJSON( "state.json", function(data) {
+						 $.each( data, function( key, val ) {
+						 	alert(val);
+						 	var msgHelp = "Puedes lanzar el directo si vas emitir. No olvides volver por aquí al terminar. La página se recargará con el estado actual en uno segundos.";
+						    var buttonText = "Lanzar Directo";
+						    var imageUrl = "images/continuidad.jpg";
+						    var linkAction = "index.html?status=true";
+							if(!val){
+								msgHelp = "Puedes volver a activar la continuidad en este momento. La página se recargará con el estado actual en uno segundos.";
+								buttonText = "Lanzar Continuidad";
+						    	imageUrl = "images/directo.jpg";
+						    	linkAction = "index.html?status=false";
+							}
+
+							$("#msg-to-show").text(msgHelp);
+							$("#action-to-launch").attr("href",linkAction);
+							$("#action-to-launch").text(buttonText);
+							$("#image-to-show").attr("src",imageUrl);
+						  });
+						 });
+			   }
+
+
+			   $(document).ready(function(e) {
+			   	$.ajaxSetup({ cache: false });
+			   	setTimeout(function() {
+					loadDataFromJSON();
+				}, 3000);
+			   });
+
+			  
+			</script>
 
 	</body>
 </html>
