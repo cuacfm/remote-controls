@@ -177,9 +177,8 @@
 
 							$( "#new-channel-save" ).click(function() {
 							  var actionToSave = "index.html?status=preview&channel=https://meet.jit.si/" + channelName;
-							  var newValue = $("#new-channel").val();
 							  if($("#new-channel").val()){
-								var actionToSave = "index.html?status=preview&channel=https://meet.jit.si/" + $("#new-channel").val();
+								actionToSave = "index.html?status=preview&channel=https://meet.jit.si/" + $("#new-channel").val();
 							  }
 							  $("#new-channel-save").attr("href",actionToSave);
 							});
