@@ -69,23 +69,33 @@
 			<header id="header">
 				<div class="content">
 					<h1><a href="#">CUAC FM</a></h1>
-					<div id="channel-container">
-					<p id="current-channel-text">La sala actual de directo es: </p>
+					<p id="msg-header">Cargando...</p>
+					<p><a id="button-header" href="#" class="button icon fa-chevron-down scrolly">Espera...</a></p>
+                    
+				</div>
+				<div class="image phone"><div class="inner"><img id="image-to-show" src="images/loading.jpg" alt="" /></div></div>
+			</header>
+
+			<section id="channel-container" class="wrapper special">
+					<div>
+					<p id="current-channel-text">La sala actual de jitsi de directo es: </p>
 					<a id="current-channel" href="#" target="parent" target="_blank" class="button special icon fa-chrome">...</a>
 					<br/>
 					<br/>
-					<input type="text" id="new-channel" name="new-channel" value="" placeholder="Introduce el nombre de la sala si es una diferente" />
-					<br/>
+					<ul class="actions">
+					<li><input type="text" id="new-channel" name="new-channel" value="" placeholder="Introduce el nombre de la sala si es una diferente" /></li>
+					<li><a id="new-channel-save" href="#" class="button special icon fa-save">Guardar	</a></li>
+					</ul>
 					</div>
+			</section>
+
+			<section id="one" class="wrapper style2 special">
 					<p id="msg-to-show">Estamos cargando los datos actuales. Espera un momento...</p>
                     <ul class="actions">
                     	<li><a id="action-to-launch" href="#" class="button special icon fa-play">...</a></li>
                         <li><a id="action-to-launch-reset" href="#" class="button special icon fa-close">...</a></li>
 					</ul>
-                    
-				</div>
-				<div class="image phone"><div class="inner"><img id="image-to-show" src="images/loading.jpg" alt="" /></div></div>
-			</header>
+			</section>
 
 		<!-- Footer -->
 			<footer id="footer">
@@ -116,20 +126,30 @@
 						    var buttonText = "Lanzar Previo";
 						    var imageUrl = "images/continuidad.jpg";
 						    var linkAction = "index.html?status=preview&channel=https://meet.jit.si/" + channelName;
-						    var resetAction = "index.html?status=retransmission&channelName=https://meet.jit.si/CuacCOVID19";
+						    var resetAction = "index.html?status=retransmission&channelName=https://meet.jit.si/CuacFMDirecto";
+						    var headerTopeMessage = "Ahora Continuidad";
+						    var headerLinkAction = "#one";
+						    var headerLinkText = "Empezar";
 
 							if(data.showState == "live"){
 								msgHelp = "Puedes volver a activar la continuidad en este momento. La página se recargará con el estado actual en uno segundos.";
 								buttonText = "Lanzar Continuidad";
 						    	imageUrl = "images/directo.jpg";
 						    	linkAction = resetAction;
+						    	headerTopeMessage = "Ahora Directo";
+						    	headerLinkAction = "#channel-container";
+						    	headerLinkText = "Finalizar";
 						    	$("#channel-container").show();
 						    	$("#new-channel").hide();
+						    	$("#new-channel-save").hide();
 							} else if(data.showState== "preview"){
 								msgHelp = "Puedes lanzar el directo si vas emitir. No olvides volver por aquí al terminar. La página se recargará con el estado actual en uno segundos.";
 						        buttonText = "Lanzar Directo";
-						         imageUrl = "images/loading.jpg";
-						       linkAction = "index.html?status=live&channel=https://meet.jit.si/" + channelName;
+						        imageUrl = "images/preview.jpg";
+						        linkAction = "index.html?status=live&channel=https://meet.jit.si/" + channelName;
+						        headerTopeMessage = "Ahora Continuidad";
+						    	headerLinkAction = "#channel-container";
+						    	headerLinkText = "Continuar";
 						       $("#channel-container").show();
 						       $("#action-to-launch-reset").show();
 							}
@@ -142,6 +162,10 @@
 							$("#image-to-show").attr("src",imageUrl);
 							$("#current-channel").text(channelName);
 							$("#current-channel").attr("href","https://meet.jit.si/" + channelName);
+							$("#msg-header").text(headerTopeMessage);
+							$("#button-header").text(headerLinkText);
+							$("#button-header").attr("href",headerLinkAction);
+
 
 							$( "#action-to-launch" ).click(function() {
 							  var newValue = $("#new-channel").val();
@@ -149,6 +173,15 @@
 								linkAction = "index.html?status=live&channel=https://meet.jit.si/" + $.trim($("#new-channel").val());
 								$("#action-to-launch").attr("href",linkAction);
 							  }
+							});
+
+							$( "#new-channel-save" ).click(function() {
+							  var actionToSave = "index.html?status=preview&channel=https://meet.jit.si/" + channelName;
+							  var newValue = $("#new-channel").val();
+							  if($("#new-channel").val()){
+								var actionToSave = "index.html?status=preview&channel=https://meet.jit.si/" + $("#new-channel").val();
+							  }
+							  $("#new-channel-save").attr("href",actionToSave);
 							});
 						 });
 			   }
