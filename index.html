@@ -118,14 +118,14 @@
 						    var linkAction = "index.html?status=preview&channel=https://meet.jit.si/" + channelName;
 						    var resetAction = "index.html?status=retransmission&channelName=https://meet.jit.si/CuacCOVID19";
 
-							if(data.isLiveShow == "live"){
+							if(data.showState == "live"){
 								msgHelp = "Puedes volver a activar la continuidad en este momento. La página se recargará con el estado actual en uno segundos.";
 								buttonText = "Lanzar Continuidad";
 						    	imageUrl = "images/directo.jpg";
 						    	linkAction = resetAction;
 						    	$("#channel-container").show();
 						    	$("#new-channel").hide();
-							} else if(data.isLiveShow== "preview"){
+							} else if(data.showState== "preview"){
 								msgHelp = "Puedes lanzar el directo si vas emitir. No olvides volver por aquí al terminar. La página se recargará con el estado actual en uno segundos.";
 						        buttonText = "Lanzar Directo";
 						         imageUrl = "images/loading.jpg";
