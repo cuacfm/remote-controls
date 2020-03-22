@@ -70,10 +70,9 @@
 				<div class="content">
 					<h1><a href="#">CUAC FM</a></h1>
 					<p id="msg-header">Cargando...</p>
-					<p id="msg-subheader-name">cuac fm</p>
-					<p id="msg-subheader-date">Cargando...</p>
 					<p><a id="button-header" href="#" class="button icon fa-chevron-down scrolly">Espera...</a></p>
-                    
+					<p id="msg-subheader-name"></p>
+					<p id="msg-subheader-date"></p>
 				</div>
 				<div class="image phone"><div class="inner"><img id="image-to-show" src="images/loading.jpg" alt="" /></div></div>
 			</header>
@@ -164,8 +163,8 @@
 							$("#current-channel").text(channelName);
 							$("#current-channel").attr("href","https://meet.jit.si/" + channelName);
 							$("#msg-header").text(headerTopeMessage);
-							$("#msg-subheader-name").text(data.lastUser);
-							$("#msg-subheader-date").text(data.lastChangeDate);
+							$("#msg-subheader-name").text("Último usuari@: " + data.lastUser);
+							$("#msg-subheader-date").text("Última modificación: " + data.lastChangeDate);
 							$("#button-header").text(headerLinkText);
 							$("#button-header").attr("href",headerLinkAction);
 
