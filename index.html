@@ -70,6 +70,8 @@
 				<div class="content">
 					<h1><a href="#">CUAC FM</a></h1>
 					<p id="msg-header">Cargando...</p>
+					<p id="msg-subheader-name">cuac fm</p>
+					<p id="msg-subheader-date">Cargando...</p>
 					<p><a id="button-header" href="#" class="button icon fa-chevron-down scrolly">Espera...</a></p>
                     
 				</div>
@@ -119,14 +121,13 @@
 			 	//live, preview, retransmission
 			 	function loadDataFromJSON(){
 				   	 $.getJSON( "state.json", function(data) {
-				   	 		var parts = data.currentChannel.split('/');
-							var channelName = parts.pop() || parts.pop(); 
+							var channelName = data.currentChannel;
 
 						 	var msgHelp = "Haciendo click en Lanzar Previo verás una pantalla donde configurar el canal de jitsi. La página se recargará con el estado actual en uno segundos.";
 						    var buttonText = "Lanzar Previo";
 						    var imageUrl = "images/continuidad.jpg";
-						    var linkAction = "index.html?status=preview&channel=https://meet.jit.si/" + channelName;
-						    var resetAction = "index.html?status=retransmission&channelName=https://meet.jit.si/CuacFMDirecto";
+						    var linkAction = "updateStatus.php?status=preview&channel=" + channelName;
+						    var resetAction = "updateStatus.php?status=retransmission&channelName=CuacFMDirecto";
 						    var headerTopeMessage = "Ahora Continuidad";
 						    var headerLinkAction = "#one";
 						    var headerLinkText = "Empezar";
@@ -146,7 +147,7 @@
 								msgHelp = "Puedes lanzar el directo si vas emitir. No olvides volver por aquí al terminar. La página se recargará con el estado actual en uno segundos.";
 						        buttonText = "Lanzar Directo";
 						        imageUrl = "images/preview.jpg";
-						        linkAction = "index.html?status=live&channel=https://meet.jit.si/" + channelName;
+						        linkAction = "updateStatus.php?status=live&channel=" + channelName;
 						        headerTopeMessage = "Ahora Continuidad";
 						    	headerLinkAction = "#channel-container";
 						    	headerLinkText = "Continuar";
@@ -163,36 +164,31 @@
 							$("#current-channel").text(channelName);
 							$("#current-channel").attr("href","https://meet.jit.si/" + channelName);
 							$("#msg-header").text(headerTopeMessage);
+							$("#msg-subheader-name").text(data.lastUser);
+							$("#msg-subheader-date").text(data.lastChangeDate);
 							$("#button-header").text(headerLinkText);
 							$("#button-header").attr("href",headerLinkAction);
-
 
 							$( "#action-to-launch" ).click(function() {
 							  var newValue = $("#new-channel").val();
 							  if($("#new-channel").val()){
-								linkAction = "index.html?status=live&channel=https://meet.jit.si/" + $.trim($("#new-channel").val());
+								linkAction = "updateStatus.php?status=live&channel=" + $.trim($("#new-channel").val());
 								$("#action-to-launch").attr("href",linkAction);
 							  }
 							});
 
 							$( "#new-channel-save" ).click(function() {
-							  var actionToSave = "index.html?status=preview&channel=https://meet.jit.si/" + channelName;
+							  var actionToSave = "updateStatus.php?status=preview&channel=" + channelName;
 							  if($("#new-channel").val()){
-								actionToSave = "index.html?status=preview&channel=https://meet.jit.si/" + $("#new-channel").val();
+								actionToSave = "updateStatus.php?status=preview&channel=" + $("#new-channel").val();
 							  }
 							  $("#new-channel-save").attr("href",actionToSave);
 							});
 						 });
 			   }
 
-
 			   $(document).ready(function(e) {
 			   	$.ajaxSetup({ cache: false });
-			   	var uri = window.location.toString();
-				if (uri.indexOf("?") > 0) {
-				    var clean_uri = uri.substring(0, uri.indexOf("?"));
-				    window.history.replaceState({}, document.title, clean_uri);
-				}
 				$("#channel-container").hide();
 				$("#action-to-launch-reset").hide();
 			   	setTimeout(function() {
