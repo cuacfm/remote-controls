@@ -1,3 +1,4 @@
 {
-	"isLiveShow": false
+	"isLiveShow": "live",
+	"currentChannel" : "https://meet.jit.si/CuacCOVID19"
 }

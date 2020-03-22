@@ -69,9 +69,18 @@
 			<header id="header">
 				<div class="content">
 					<h1><a href="#">CUAC FM</a></h1>
+					<div id="channel-container">
+					<p id="current-channel-text">La sala actual de directo es: </p>
+					<a id="current-channel" href="#" target="parent" target="_blank" class="button special icon fa-chrome">...</a>
+					<br/>
+					<br/>
+					<input type="text" id="new-channel" name="new-channel" value="" placeholder="Introduce el nombre de la sala si es una diferente" />
+					<br/>
+					</div>
 					<p id="msg-to-show">Estamos cargando los datos actuales. Espera un momento...</p>
                     <ul class="actions">
-                        <li><a id="action-to-launch" href="#" class="button special icon fa-play">...</a></li>
+                    	<li><a id="action-to-launch" href="#" class="button special icon fa-play">...</a></li>
+                        <li><a id="action-to-launch-reset" href="#" class="button special icon fa-close">...</a></li>
 					</ul>
                     
 				</div>
@@ -97,35 +106,67 @@
 			<script src="assets/js/main.js"></script>
 				
 			 <script type="text/javascript">
+			 	//live, preview, retransmission
 			 	function loadDataFromJSON(){
 				   	 $.getJSON( "state.json", function(data) {
-						 $.each( data, function( key, val ) {
-						 	alert(val);
-						 	var msgHelp = "Puedes lanzar el directo si vas emitir. No olvides volver por aquí al terminar. La página se recargará con el estado actual en uno segundos.";
-						    var buttonText = "Lanzar Directo";
+				   	 		var parts = data.currentChannel.split('/');
+							var channelName = parts.pop() || parts.pop(); 
+
+						 	var msgHelp = "Haciendo click en Lanzar Previo verás una pantalla donde configurar el canal de jitsi. La página se recargará con el estado actual en uno segundos.";
+						    var buttonText = "Lanzar Previo";
 						    var imageUrl = "images/continuidad.jpg";
-						    var linkAction = "index.html?status=true";
-							if(!val){
+						    var linkAction = "index.html?status=preview&channel=https://meet.jit.si/" + channelName;
+						    var resetAction = "index.html?status=retransmission&channelName=https://meet.jit.si/CuacCOVID19";
+
+							if(data.isLiveShow == "live"){
 								msgHelp = "Puedes volver a activar la continuidad en este momento. La página se recargará con el estado actual en uno segundos.";
 								buttonText = "Lanzar Continuidad";
 						    	imageUrl = "images/directo.jpg";
-						    	linkAction = "index.html?status=false";
+						    	linkAction = resetAction;
+						    	$("#channel-container").show();
+						    	$("#new-channel").hide();
+							} else if(data.isLiveShow== "preview"){
+								msgHelp = "Puedes lanzar el directo si vas emitir. No olvides volver por aquí al terminar. La página se recargará con el estado actual en uno segundos.";
+						        buttonText = "Lanzar Directo";
+						         imageUrl = "images/loading.jpg";
+						       linkAction = "index.html?status=live&channel=https://meet.jit.si/" + channelName;
+						       $("#channel-container").show();
+						       $("#action-to-launch-reset").show();
 							}
-
+							
 							$("#msg-to-show").text(msgHelp);
 							$("#action-to-launch").attr("href",linkAction);
 							$("#action-to-launch").text(buttonText);
+							$("#action-to-launch-reset").text("Resetear");
+							$("#action-to-launch-reset").attr("href",resetAction);
 							$("#image-to-show").attr("src",imageUrl);
-						  });
+							$("#current-channel").text(channelName);
+							$("#current-channel").attr("href","https://meet.jit.si/" + channelName);
+
+							$( "#action-to-launch" ).click(function() {
+							  var newValue = $("#new-channel").val();
+							  if($("#new-channel").val()){
+								linkAction = "index.html?status=live&channel=https://meet.jit.si/" + $.trim($("#new-channel").val());
+								$("#action-to-launch").attr("href",linkAction);
+							  }
+							  alert(linkAction);
+							});
 						 });
 			   }
 
 
 			   $(document).ready(function(e) {
 			   	$.ajaxSetup({ cache: false });
+			   	var uri = window.location.toString();
+				if (uri.indexOf("?") > 0) {
+				    var clean_uri = uri.substring(0, uri.indexOf("?"));
+				    window.history.replaceState({}, document.title, clean_uri);
+				}
+				$("#channel-container").hide();
+				$("#action-to-launch-reset").hide();
 			   	setTimeout(function() {
 					loadDataFromJSON();
-				}, 3000);
+				}, 3500);
 			   });
 
 			  
