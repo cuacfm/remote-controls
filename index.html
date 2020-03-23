@@ -117,73 +117,89 @@
 			<script src="assets/js/main.js"></script>
 				
 			 <script type="text/javascript">
+			 	var currentState = null;
 			 	//live, preview, retransmission
-			 	function loadDataFromJSON(){
+			 	function loadDataFromJSON(pastState){
 				   	 $.getJSON( "state.json", function(data) {
-							var channelName = data.currentChannel;
+				   	 		if(pastState != data.showState){
+				   	 			if(currentState != null){
+				   	 				alert("Alguien modificó el estado. Revisa que todo sea correcto");
+				   	 			}
+				   	 			currentState = data.showState;
+								var channelName = data.currentChannel;
 
-						 	var msgHelp = "Haciendo click en Lanzar Previo verás una pantalla donde configurar el canal de jitsi. La página se recargará con el estado actual en uno segundos.";
-						    var buttonText = "Lanzar Previo";
-						    var imageUrl = "images/continuidad.jpg";
-						    var linkAction = "updateStatus.php?status=preview&channel=" + channelName;
-						    var resetAction = "updateStatus.php?status=retransmission&channel=CuacFMDirecto";
-						    var headerTopeMessage = "Ahora Continuidad";
-						    var headerLinkAction = "#one";
-						    var headerLinkText = "Empezar";
+							 	var msgHelp = "Haciendo click en Lanzar Previo verás una pantalla donde configurar el canal de jitsi. La página se recargará con el estado actual en uno segundos.";
+							    var buttonText = "Lanzar Previo";
+							    var imageUrl = "images/continuidad.jpg";
+							    var linkAction = "updateStatus.php?status=preview&channel=" + channelName;
+							    var resetAction = "updateStatus.php?status=retransmission&channel=CuacFMDirecto";
+							    var headerTopeMessage = "Ahora Continuidad";
+							    var headerLinkAction = "#one";
+							    var headerLinkText = "Quiero hacer un directo";
 
-							if(data.showState == "live"){
-								msgHelp = "Puedes volver a activar la continuidad en este momento. La página se recargará con el estado actual en uno segundos.";
-								buttonText = "Lanzar Continuidad";
-						    	imageUrl = "images/directo.jpg";
-						    	linkAction = resetAction;
-						    	headerTopeMessage = "Ahora Directo";
-						    	headerLinkAction = "#channel-container";
-						    	headerLinkText = "Finalizar";
-						    	$("#channel-container").show();
-						    	$("#new-channel").hide();
-						    	$("#new-channel-save").hide();
-							} else if(data.showState== "preview"){
-								msgHelp = "Puedes lanzar el directo si vas emitir. No olvides volver por aquí al terminar. La página se recargará con el estado actual en uno segundos.";
-						        buttonText = "Lanzar Directo";
-						        imageUrl = "images/preview.jpg";
-						        linkAction = "updateStatus.php?status=live&channel=" + channelName;
-						        headerTopeMessage = "Ahora Continuidad";
-						    	headerLinkAction = "#channel-container";
-						    	headerLinkText = "Continuar";
-						       $("#channel-container").show();
-						       $("#action-to-launch-reset").show();
-							}
-							
-							$("#msg-to-show").text(msgHelp);
-							$("#action-to-launch").attr("href",linkAction);
-							$("#action-to-launch").text(buttonText);
-							$("#action-to-launch-reset").text("Resetear");
-							$("#action-to-launch-reset").attr("href",resetAction);
-							$("#image-to-show").attr("src",imageUrl);
-							$("#current-channel").text(channelName);
-							$("#current-channel").attr("href","https://meet.jit.si/" + channelName);
-							$("#msg-header").text(headerTopeMessage);
-							$("#msg-subheader-name").text("Último usuari@: " + data.lastUser);
-							$("#msg-subheader-date").text("Última modificación: " + data.lastChangeDate);
-							$("#button-header").text(headerLinkText);
-							$("#button-header").attr("href",headerLinkAction);
+							    $("#channel-container").hide();
+								$("#action-to-launch-reset").hide();
 
-							$( "#action-to-launch" ).click(function() {
-							  var newValue = $("#new-channel").val();
-							  if($("#new-channel").val()){
-								linkAction = "updateStatus.php?status=live&channel=" + $.trim($("#new-channel").val());
+								if(data.showState == "live"){
+									msgHelp = "Puedes volver a activar la continuidad en este momento. La página se recargará con el estado actual en uno segundos.";
+									buttonText = "Lanzar Continuidad";
+							    	imageUrl = "images/directo.jpg";
+							    	linkAction = resetAction;
+							    	headerTopeMessage = "Ahora Directo";
+							    	headerLinkAction = "#channel-container";
+							    	headerLinkText = "Quiero poner la continuidad";
+							    	$("#channel-container").show();
+							    	$("#action-to-launch-reset").show();
+							    	$("#new-channel").hide();
+							    	$("#new-channel-save").hide();
+								} else if(data.showState == "preview"){
+									msgHelp = "Puedes lanzar el directo si vas emitir. No olvides volver por aquí al terminar. La página se recargará con el estado actual en uno segundos.";
+							        buttonText = "Lanzar Directo";
+							        imageUrl = "images/preview.jpg";
+							        linkAction = "updateStatus.php?status=live&channel=" + channelName;
+							        headerTopeMessage = "Ahora Continuidad";
+							    	headerLinkAction = "#channel-container";
+							    	headerLinkText = "Continuar";
+							       $("#channel-container").show();
+							       $("#action-to-launch-reset").show();
+							       $("#new-channel").show();
+							       $("#new-channel-save").show();
+								}
+								
+								$("#msg-to-show").text(msgHelp);
 								$("#action-to-launch").attr("href",linkAction);
-							  }
-							});
+								$("#action-to-launch").text(buttonText);
+								$("#action-to-launch-reset").text("Resetear");
+								$("#action-to-launch-reset").attr("href",resetAction);
+								$("#image-to-show").attr("src",imageUrl);
+								$("#current-channel").text(channelName);
+								$("#current-channel").attr("href","https://meet.jit.si/" + channelName);
+								$("#msg-header").text(headerTopeMessage);
+								$("#msg-subheader-name").text("Último usuari@: " + data.lastUser);
+								$("#msg-subheader-date").text("Última modificación: " + data.lastChangeDate);
+								$("#button-header").text(headerLinkText);
+								$("#button-header").attr("href",headerLinkAction);
 
-							$( "#new-channel-save" ).click(function() {
-							  var actionToSave = "updateStatus.php?status=preview&channel=" + channelName;
-							  if($("#new-channel").val()){
-								actionToSave = "updateStatus.php?status=preview&channel=" + $("#new-channel").val();
-							  }
-							  $("#new-channel-save").attr("href",actionToSave);
-							});
+								$( "#action-to-launch" ).click(function() {
+								  var newValue = $("#new-channel").val();
+								  if($("#new-channel").val()){
+									linkAction = "updateStatus.php?status=live&channel=" + $.trim($("#new-channel").val());
+									$("#action-to-launch").attr("href",linkAction);
+								  }
+								});
+
+								$( "#new-channel-save" ).click(function() {
+								  var actionToSave = "updateStatus.php?status=preview&channel=" + channelName;
+								  if($("#new-channel").val()){
+									actionToSave = "updateStatus.php?status=preview&channel=" + $("#new-channel").val();
+								  }
+								  $("#new-channel-save").attr("href",actionToSave);
+								});
+							}
 						 });
+				   	setTimeout(function() {
+						loadDataFromJSON(currentState);
+					}, 45000);
 			   }
 
 			   $(document).ready(function(e) {
@@ -191,8 +207,8 @@
 				$("#channel-container").hide();
 				$("#action-to-launch-reset").hide();
 			   	setTimeout(function() {
-					loadDataFromJSON();
-				}, 3500);
+					loadDataFromJSON(currentState);
+				}, 1200);
 			   });
 
 			  
